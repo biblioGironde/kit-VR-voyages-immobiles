@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voyages immobiles · Chargeur 360</title>
+<style>
+:root{
+  --bg:#f4f2ee; --card:#fffdf9; --ink:#1d1b18; --muted:#6f6a62; --line:#e3ded5;
+  --accent:#0f6b5f; --accent-ink:#fff; --accent-soft:#dcefe9;
+  --warn:#a35b00; --warn-soft:#fbecd5; --err:#b3261e; --err-soft:#f9dedc;
+  --ok:#2e7d32; --ok-soft:#dff0df; --radius:14px;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151513; --card:#1e1d1b; --ink:#ecebe7; --muted:#9e988e; --line:#34322e;
+    --accent:#4fbfae; --accent-ink:#0b1b18; --accent-soft:#183531;
+    --warn:#f0a94a; --warn-soft:#3a2c17; --err:#f2938b; --err-soft:#3d1d1b; --ok:#86c98a; --ok-soft:#1d321e;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 24px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.logo{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--accent);position:relative;flex:none}
+.logo::before{content:"";position:absolute;inset:6px 2px;border:2px solid var(--accent);border-radius:50%;}
+.logo::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;border-left:2px solid var(--accent);}
+h1{font-size:19px;margin:0;letter-spacing:-.01em}
+.tag{font-size:12.5px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;background:var(--bg);border:1px solid var(--line);font-size:13.5px}
+.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.pill[data-mode="on"]::before{background:var(--ok)}
+.pill[data-mode="auth"]::before{background:var(--warn);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+button,.btn{font:inherit;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.big{padding:12px 18px;font-size:15.5px}
+.ghost{background:transparent}
+.icon-btn{width:30px;height:30px;padding:0;border-radius:8px;font-size:18px;line-height:1;color:var(--muted);background:transparent;border-color:transparent}
+.icon-btn:hover:not(:disabled){background:var(--err-soft);color:var(--err)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;padding:20px 24px 40px;max-width:1280px;margin:0 auto}
+@media (max-width:900px){main{grid-template-columns:1fr;padding:16px}}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.card h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.card h2 .sp{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:400}
+.muted{color:var(--muted)} .mono{font-family:var(--mono);font-size:.92em} .pad{padding:10px 4px}
+.banner{border-radius:12px;padding:12px 16px;margin:16px 24px 0;max-width:1232px}
+@media (min-width:1281px){.banner{margin-left:auto;margin-right:auto}}
+.banner.err{background:var(--err-soft);color:var(--err)}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.ok{background:var(--accent-soft);color:var(--ink)}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;transition:.15s}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop p{margin:0 0 12px}
+.drop-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
+.drop-actions label.btn{display:inline-block}
+input[type=file]{display:none}
+select,input[type=text]{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 9px;max-width:100%}
+.items{list-style:none;margin:14px 0 0;padding:0;max-height:52vh;overflow:auto}
+.row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid var(--line)}
+.row-main{flex:1;min-width:0}
+.row-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.row-sub{font-size:13px;color:var(--muted)}
+.row-coll{width:150px;font-size:13.5px}
+.row-bar,.storage-bar,.pbar{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:6px}
+.row-bar i,.storage-bar i,.pbar i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.badge{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;background:var(--bg)}
+.s-missing{background:var(--accent-soft);color:var(--accent)} .s-diff{background:var(--warn-soft);color:var(--warn)}
+.s-ok{background:var(--ok-soft);color:var(--ok)} .s-err{background:var(--err-soft);color:var(--err)}
+.s-sending{background:var(--accent);color:var(--accent-ink)}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.actions .sp{margin-left:auto}
+.progress{margin-top:14px;padding:14px;border-radius:12px;background:var(--accent-soft)}
+.progress .pbar{height:10px;background:var(--card)}
+.progress-txt{display:flex;justify-content:space-between;font-size:13.5px;margin-top:8px;gap:10px;flex-wrap:wrap}
+body[data-busy="1"] #btn-send{display:none}
+body:not([data-busy="1"]) #btn-cancel{display:none}
+.kv{display:grid;gap:6px}
+.kv div{display:flex;justify-content:space-between;gap:10px}
+.kv span{color:var(--muted)} .warn{color:var(--warn)}
+.storage{margin-top:12px} .storage-txt{font-size:13px;color:var(--muted);margin-top:4px}
+.remote{list-style:none;margin:0;padding:0;max-height:40vh;overflow:auto}
+.group{font-size:12.5px;font-weight:600;color:var(--muted);padding:10px 4px 4px}
+.rrow{display:flex;align-items:center;gap:8px;padding:5px 4px;border-top:1px solid var(--line);font-size:13.5px}
+.rname{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsize{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;font-size:13.5px}
+.field small{color:var(--muted)}
+.check{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;margin-bottom:10px}
+.check input{margin-top:3px;accent-color:var(--accent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:2px 4px 2px 10px;font-size:13px}
+.chip button{border:0;background:transparent;padding:0 5px;color:var(--muted);cursor:pointer;font-size:15px}
+#coll-add{display:flex;gap:6px} #coll-add input{flex:1;min-width:0}
+.sessions{list-style:none;margin:0;padding:0;font-size:13.5px}
+.sessions li{padding:6px 0;border-top:1px solid var(--line)}
+details.help summary{cursor:pointer;font-weight:600}
+details.help ol{padding-left:20px;margin:10px 0 0} details.help li{margin-bottom:6px}
+.log{font-family:var(--mono);font-size:12.5px;max-height:180px;overflow:auto;background:var(--bg);border-radius:10px;padding:8px 10px}
+.log:empty::before{content:"Aucun événement pour l’instant.";color:var(--muted)}
+.log-line{padding:2px 0} .log-t{color:var(--muted)} .log-line.ok{color:var(--ok)} .log-line.err{color:var(--err)}
+.hint-big{font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true"></div>
+    <div><h1>Voyages immobiles</h1><div class="tag">Chargeur de vidéos 360° pour casques Meta Quest · biblio.gironde</div></div>
+  </div>
+  <span class="pill" id="conn-pill" data-mode="off"><span id="conn-text">Aucun casque</span></span>
+  <button class="primary" id="btn-connect">Connecter un casque</button>
+  <button id="btn-disconnect" hidden>Déconnecter</button>
+</header>
+
+<div class="banner err" id="nousb" hidden>Ce navigateur ne gère pas WebUSB. Ouvrez cette page dans <b>Chrome</b> ou <b>Edge</b> sur ordinateur.</div>
+<div class="banner warn hint-big" id="auth-hint" hidden>👓 <b>Mettez le casque</b> et acceptez « Autoriser le débogage USB ». Cochez « Toujours autoriser depuis cet ordinateur » pour ne plus avoir à le refaire.</div>
+<div class="banner err" id="error" hidden></div>
+<div class="banner ok" id="next" hidden>✅ Casque prêt. Pour préparer le suivant : débranchez-le, branchez le casque suivant et cliquez sur <b>Connecter un casque</b>. La sélection est conservée et seules les vidéos manquantes seront envoyées.</div>
+
+<main>
+  <div class="col">
+    <section class="card">
+      <h2>Sélection à envoyer <span class="sp muted" id="sel-summary"></span></h2>
+      <div class="drop" id="drop">
+        <p><b>Glissez ici des vidéos ou un dossier</b><br><span class="muted">MP4, MKV, MOV, WebM… Les sous-dossiers portant le nom d'une collection y sont rangés automatiquement.</span></p>
+        <div class="drop-actions">
+          <label class="btn">Choisir des fichiers<input type="file" id="pick-files" accept="video/*,.mkv" multiple></label>
+          <label class="btn">Choisir un dossier<input type="file" id="pick-dir" webkitdirectory multiple></label>
+          <span class="muted">Ranger dans :</span>
+          <select id="add-collection" aria-label="Dossier de destination des vidéos ajoutées"></select>
+        </div>
+      </div>
+      <p class="muted pad" id="empty">Aucune vidéo sélectionnée.</p>
+      <ul class="items" id="items"></ul>
+      <div class="progress" id="progress" hidden>
+        <div class="pbar"><i id="progress-fill" style="width:0"></i></div>
+        <div class="progress-txt"><b id="progress-label"></b><span class="muted" id="progress-meta"></span></div>
+      </div>
+      <div class="actions">
+        <button class="primary big" id="btn-send" disabled>Connectez un casque</button>
+        <button class="big" id="btn-cancel">Annuler l'envoi</button>
+        <button class="ghost sp" id="btn-clear" disabled>Vider la sélection</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Journal</h2>
+      <div class="log" id="log" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card">
+      <h2>Casque</h2>
+      <div id="device"></div>
+    </section>
+
+    <section class="card">
+      <h2>Contenu du casque <button class="sp ghost" id="btn-refresh" style="padding:4px 10px;font-size:13px">Actualiser</button></h2>
+      <div class="muted mono" id="remote-root" style="font-size:12px;margin-bottom:6px"></div>
+      <ul class="remote" id="remote"></ul>
+    </section>
+
+    <section class="card" id="sessions-card" hidden>
+      <h2>Casques préparés</h2>
+      <ul class="sessions" id="sessions"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Réglages</h2>
+      <label class="field">Dossier sur le casque
+        <input type="text" id="opt-root" spellcheck="false">
+        <small>Le dossier Movies est visible dans l'application Fichiers du casque.</small>
+      </label>
+      <div class="field">Collections (sous-dossiers)
+        <div class="chips" id="coll-list"></div>
+        <form id="coll-add"><input type="text" id="coll-new" placeholder="Nouvelle collection"><button type="submit">Ajouter</button></form>
+      </div>
+      <label class="field">Suffixe de nom de fichier
+        <select id="opt-suffix">
+          <option value="">Aucun (garder le nom d'origine)</option>
+          <option value="_360">_360 · monoscopique</option>
+          <option value="_360_TB">_360_TB · stéréo haut/bas</option>
+          <option value="_360_LR">_360_LR · stéréo côte à côte</option>
+          <option value="_180_LR">_180_LR · 180° stéréo</option>
+        </select>
+        <small>Aide certains lecteurs (Skybox, DeoVR…) à reconnaître la projection.</small>
+      </label>
+      <label class="check"><input type="checkbox" id="opt-skip"> <span>Ne pas renvoyer les vidéos déjà présentes (même nom, même taille)</span></label>
+      <label class="check"><input type="checkbox" id="opt-mirror"> <span><b>Mode miroir</b> : supprimer du casque les vidéos de ce dossier absentes de la sélection</span></label>
+    </section>
+
+    <section class="card">
+      <details class="help">
+        <summary>Préparer un casque (une seule fois)</summary>
+        <ol>
+          <li>Activer le <b>mode développeur</b> du casque dans l'application mobile Meta Horizon (Appareils › Paramètres › Mode développeur). Il faut un compte rattaché à une organisation développeur Meta.</li>
+          <li>Brancher le casque à l'ordinateur avec un câble USB-C <b>de données</b>.</li>
+          <li>Cliquer sur « Connecter un casque », choisir le Quest dans la liste, puis accepter le débogage USB dans le casque.</li>
+          <li>Fermer SideQuest, Meta Quest Developer Hub ou tout autre outil adb : ils bloquent l'accès.</li>
+        </ol>
+        <p class="muted" style="font-size:13px;margin:10px 0 0">Les vidéos ne quittent jamais l'ordinateur autrement que par le câble : aucun envoi sur internet.</p>
+      </details>
+    </section>
+  </div>
+</main>
+<script>/*__BUNDLE__*/</script>
+</body>
+</html>

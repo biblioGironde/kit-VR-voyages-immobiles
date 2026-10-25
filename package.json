@@ -1,0 +1,74 @@
+{
+  "name": "kit-vr-voyages-immobiles",
+  "productName": "Voyages immobiles",
+  "version": "1.0.0",
+  "description": "Chargeur de vidéos 360° pour casques Meta Quest (biblio.gironde)",
+  "main": "electron/main.js",
+  "author": "biblio.gironde",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build:web": "node scripts/build-web.mjs",
+    "start": "npm run build:web && electron .",
+    "dist": "npm run build:web && electron-builder",
+    "dist:win": "npm run build:web && electron-builder --win",
+    "dist:mac": "npm run build:web && electron-builder --mac",
+    "dist:linux": "npm run build:web && electron-builder --linux"
+  },
+  "build": {
+    "appId": "fr.gironde.biblio.voyages-immobiles",
+    "productName": "Voyages immobiles",
+    "artifactName": "voyages-immobiles-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**",
+      "app/**",
+      "build/icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.utilities",
+      "identity": null
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility",
+      "syncDesktopName": true
+    }
+  },
+  "devDependencies": {
+    "@yume-chan/adb": "^2.6.4",
+    "@yume-chan/adb-credential-web": "^2.1.0",
+    "@yume-chan/adb-daemon-webusb": "^2.3.2",
+    "@yume-chan/stream-extra": "^2.6.1",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.28.2"
+  },
+  "desktopName": "voyages-immobiles.desktop"
+}
