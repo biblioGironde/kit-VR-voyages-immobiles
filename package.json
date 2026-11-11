@@ -5,7 +5,7 @@
   "description": "Chargeur de vidéos 360° pour casques Meta Quest (biblio.gironde)",
   "main": "electron/main.js",
   "author": "biblio.gironde",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
     "build:web": "node scripts/build-web.mjs",

@@ -73,6 +73,7 @@ Les applications ne sont pas signées : Windows SmartScreen demandera « Informa
 
 La communication avec le casque utilise le protocole ADB réimplémenté en JavaScript par [Tango](https://github.com/yume-chan/ya-webadb) (licence MIT), au-dessus de WebUSB. La clé d'authentification ADB est générée localement et conservée par l'application ; aucune donnée ne quitte l'ordinateur autrement que par le câble.
 
-## Licence
+## Licences
 
-MIT
+- **Code** : © Département de la Gironde — biblio.gironde, sous licence [GNU Affero General Public License v3.0](LICENSE) ou ultérieure (AGPL-3.0-or-later). Vous pouvez le réutiliser et le modifier ; toute version modifiée, redistribuée ou mise en ligne, doit être publiée sous la même licence, avec son code source.
+- Bibliothèque intégrée : [Tango](https://github.com/yume-chan/ya-webadb) (MIT).
